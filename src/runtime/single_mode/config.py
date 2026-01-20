@@ -5,6 +5,17 @@ from typing import Dict, List, Optional
 
 import json5
 
+
+def _try_load_dotenv() -> None:
+    """Best-effort load .env so OM_API_KEY/ROBOT_IP work without extra steps."""
+    try:
+        import dotenv  # type: ignore
+        dotenv.load_dotenv()
+    except Exception:
+        # dotenv is optional; do not hard-fail if missing
+        pass
+
+
 from actions import load_action
 from actions.base import AgentAction
 from backgrounds import load_background
@@ -126,6 +137,8 @@ def load_config(
     ValueError
         If configuration values are invalid (e.g., negative hertz)
     """
+    _try_load_dotenv()
+
     config_path = (
         os.path.join(
             os.path.dirname(__file__), "../../../config", config_name + ".json5"
@@ -163,16 +176,20 @@ def load_config(
     g_api_key = raw_config.get("api_key", None)
     if g_api_key is None or g_api_key == "" or g_api_key == "openmind_free":
         logging.warning(
-            "No API key found in the configuration file. Checking for backup OM_API_KEY in your .env file."
+            "No valid OpenMind API key found in the config (missing/empty or placeholder 'openmind_free'). "
+            "Checking OM_API_KEY from your .env environment."
         )
         backup_key = os.environ.get("OM_API_KEY")
         g_api_key = backup_key
         if backup_key:
             raw_config["api_key"] = backup_key
-            logging.info("Success - Found OM_API_KEY in your .env file.")
+            logging.info(
+                "Using OM_API_KEY from .env (overriding placeholder/missing api_key in config)."
+            )
         else:
             logging.warning(
-                "Could not find any API keys. Please get a free key at portal.openmind.org."
+                "No OM_API_KEY found. Set OM_API_KEY in your .env file or replace api_key in the config. "
+                "You can get a key at portal.openmind.org."
             )
 
     g_URID = raw_config.get("URID", None)
