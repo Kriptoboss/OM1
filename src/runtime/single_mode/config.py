@@ -146,6 +146,18 @@ def load_config(
     verify_runtime_version(config_version, config_name)
     validate_config_schema(raw_config)
 
+    # Warn if config fields are defined but not yet consumed by the runtime.
+    # This avoids silently ignoring user configuration.
+    if raw_config.get("action_execution_mode"):
+        logging.warning(
+            "action_execution_mode is defined but not yet consumed by the runtime (config-only for now)."
+        )
+    if raw_config.get("action_dependencies"):
+        logging.warning(
+            "action_dependencies are defined but not yet consumed by the runtime (config-only for now)."
+        )
+
+
     g_robot_ip = raw_config.get("robot_ip", None)
     if g_robot_ip is None or g_robot_ip == "" or g_robot_ip == "192.168.0.241":
         logging.warning(
