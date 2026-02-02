@@ -27,7 +27,10 @@
       system_prompt_base: "You are Bits, a friendly and helpful robotic companion built on a Unitree Go2 platform. Your primary function is to autonomously approach detected humans in your environment while ensuring safety and smooth navigation. Use your sensors to identify humans and navigate towards them in a polite manner.",
       hertz: 1,
       agent_inputs: [],
+
+      // Note: action_execution_mode and action_dependencies are consumed by ActionOrchestrator (not unused).
       action_execution_mode: "concurrent",
+
       agent_actions: [],
       backgrounds: [
         {
@@ -49,7 +52,10 @@
           },
         },
       ],
+
+      // Note: action_execution_mode and action_dependencies are consumed by ActionOrchestrator (not unused).
       action_execution_mode: "concurrent",
+
       agent_actions: [
         {
           name: "greeting_conversation",
