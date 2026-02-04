@@ -63,6 +63,11 @@ uv run src/run.py spot
 
 After launching OM1, the Spot agent will interact with you and perform (simulated) actions. For more help connecting OM1 to your robot hardware, see [getting started](https://docs.openmind.org/developing/1_get-started).
 
+> **Headless / VM note (Audio input)**  
+> When running OM1 on a headless machine (e.g. cloud VM, WSL, or server without audio hardware), enabling audio inputs such as `GoogleASRInput` may fail with  
+> `No Default Input Device Available`.  
+> In such environments, remove or disable the audio input from your agent configuration (e.g. delete `GoogleASRInput` under `agent_inputs`) or use a text-only configuration to prevent startup failure.
+
 Note: This is just an example agent configuration.
 If you want to interact with the agent and see how it works, make sure ASR and TTS are configured in spot.json5.
 
